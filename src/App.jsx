@@ -233,382 +233,386 @@ function App() {
         </div>
       </header>
 
-
-
       {/* Main Content */}
       <section className="py-8 px-6">
-        <div className="container mx-auto max-w-7xl">
-          {activeTab === 'calculator' ? (
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Input Form */}
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Calculator className="w-5 h-5" />
-                    Configuration
-                  </CardTitle>
-                  <CardDescription className="text-white/70">
-                    Select your LLM model and deployment requirements
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Model Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-white">LLM Model</Label>
-                    <Select value={selectedModel} onValueChange={setSelectedModel}>
-                      <SelectTrigger className={`bg-white/5 border-white/20 text-white ${validationErrors.selectedModel ? 'border-red-500' : ''}`}>
-                        <SelectValue placeholder="Select a model" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {llmModels.map(model => (
-                          <SelectItem key={model.id} value={model.id}>
-                            <div className="flex items-center justify-between w-full">
-                              <span>{model.name}</span>
-                              <Badge variant="outline" className="ml-2">
-                                {model.parameters}B
-                              </Badge>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {validationErrors.selectedModel && (
-                      <p className="text-red-400 text-sm">{validationErrors.selectedModel}</p>
-                    )}
-                  </div>
-
-                  {/* Use Case */}
-                  <div className="space-y-2">
-                    <Label className="text-white">Use Case</Label>
-                    <Select value={useCase} onValueChange={setUseCase}>
-                      <SelectTrigger className={`bg-white/5 border-white/20 text-white ${validationErrors.useCase ? 'border-red-500' : ''}`}>
-                        <SelectValue placeholder="Select use case" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="inference">Inference Only</SelectItem>
-                        <SelectItem value="training">Training/Fine-tuning</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {validationErrors.useCase && (
-                      <p className="text-red-400 text-sm">{validationErrors.useCase}</p>
-                    )}
-                  </div>
-
-                  {/* Quantization */}
-                  <div className="space-y-2">
-                    <Label className="text-white">Quantization</Label>
-                    <Select value={quantization} onValueChange={setQuantization}>
-                      <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="fp16">FP16 (Half Precision)</SelectItem>
-                        <SelectItem value="int8">INT8 (8-bit)</SelectItem>
-                        <SelectItem value="int4">INT4 (4-bit)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Cloud Provider Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-white">Cloud Provider (for comparison)</Label>
-                    <Select value={cloudProvider} onValueChange={setCloudProvider}>
-                      <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="aws">Amazon Web Services</SelectItem>
-                        <SelectItem value="gcp">Google Cloud Platform</SelectItem>
-                        <SelectItem value="azure">Microsoft Azure</SelectItem>
-                        <SelectItem value="oci">Oracle Cloud Infrastructure</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Additional Parameters */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-white">Time Horizon (months)</Label>
-                      <Input
-                        type="number"
-                        value={timeHorizon}
-                        onChange={(e) => setTimeHorizon(e.target.value)}
-                        className={`bg-white/5 border-white/20 text-white ${validationErrors.timeHorizon ? 'border-red-500' : ''}`}
-                      />
-                      {validationErrors.timeHorizon && (
-                        <p className="text-red-400 text-sm">{validationErrors.timeHorizon}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-white">Electricity Cost ($/kWh)</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={electricityCost}
-                        onChange={(e) => setElectricityCost(e.target.value)}
-                        className={`bg-white/5 border-white/20 text-white ${validationErrors.electricityCost ? 'border-red-500' : ''}`}
-                      />
-                      {validationErrors.electricityCost && (
-                        <p className="text-red-400 text-sm">{validationErrors.electricityCost}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Warnings */}
-                  {warnings.length > 0 && (
-                    <div className="space-y-2">
-                      {warnings.map((warning, index) => (
-                        <Alert key={index} className="bg-yellow-500/10 border-yellow-500/20">
-                          <AlertTriangle className="h-4 w-4" />
-                          <AlertDescription className="text-yellow-400">
-                            {warning.message}
-                          </AlertDescription>
-                        </Alert>
-                      ))}
-                    </div>
-                  )}
-
-                  <Button 
-                    onClick={calculateRequirements}
-                    className="w-full bg-gradient-to-r from-green-400 to-cyan-400 text-black hover:from-green-500 hover:to-cyan-500"
-                    disabled={!selectedModel || !useCase || isCalculating || Object.keys(validationErrors).length > 0}
-                  >
-                    {isCalculating ? 'Calculating...' : 'Calculate Requirements'}
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Results */}
-              {results && (
-                <div className="space-y-6">
-                  {/* Hardware Recommendations */}
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex justify-center">
+            <div className="w-full max-w-5xl">
+              {activeTab === 'calculator' ? (
+                <div className="grid lg:grid-cols-2 gap-8">
+                  {/* Input Form */}
                   <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                     <CardHeader>
                       <CardTitle className="text-white flex items-center gap-2">
-                        <Server className="w-5 h-5" />
-                        Hardware Recommendations
+                        <Calculator className="w-5 h-5" />
+                        Configuration
                       </CardTitle>
                       <CardDescription className="text-white/70">
-                        Optimal configuration for {results.model.name}
+                        Select your LLM model and deployment requirements
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Memory Requirements */}
-                      <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                        <h3 className="text-white font-semibold mb-2">Memory Requirements</h3>
-                        <p className="text-white/80">
-                          {results.requiredMemory} GB VRAM required ({quantization.toUpperCase()})
-                        </p>
-                      </div>
-
-                      {/* GPU Recommendation */}
-                      <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                        <h3 className="text-white font-semibold mb-2">Recommended GPU</h3>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-white font-medium">{results.gpuConfig.recommended.name}</p>
-                            <p className="text-white/70">{results.gpuConfig.recommended.vram} GB VRAM</p>
-                            {results.gpuConfig.multiGpu && (
-                              <p className="text-orange-400">Requires {results.gpuConfig.gpuCount} GPUs</p>
-                            )}
-                          </div>
-                          <Badge className="bg-green-500/20 text-green-400">
-                            {formatCurrency(results.gpuConfig.recommended.price_usd)}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {/* System Specifications */}
-                      <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                        <h3 className="text-white font-semibold mb-2">Complete System</h3>
-                        <div className="grid grid-cols-2 gap-2 text-sm text-white/80">
-                          <div>• GPU: {results.gpuConfig.gpuCount}x {results.gpuConfig.recommended.name}</div>
-                          <div>• CPU: {results.systemRecommendations.cpu.cores} cores</div>
-                          <div>• RAM: {results.systemRecommendations.memory.total_gb} GB</div>
-                          <div>• Storage: {results.systemRecommendations.storage.capacity_gb} GB NVMe</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Deployment Comparison */}
-                  <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                    <CardHeader>
-                      <CardTitle className="text-white flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5" />
-                        Deployment Comparison
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="mb-4 p-4 bg-gradient-to-r from-green-500/10 to-cyan-500/10 rounded-lg border border-green-500/20">
-                        <h3 className="text-white font-semibold mb-2">Recommendation</h3>
-                        <p className="text-white/80 capitalize">
-                          <strong>{results.comparison.recommendation}</strong> - {results.comparison.reason}
-                        </p>
-                        {results.comparison.savings && (
-                          <p className="text-green-400 mt-1">
-                            Potential savings: {formatCurrency(results.comparison.savings)}
-                          </p>
+                    <CardContent className="space-y-6">
+                      {/* Model Selection */}
+                      <div className="space-y-2">
+                        <Label className="text-white">LLM Model</Label>
+                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                          <SelectTrigger className={`bg-white/5 border-white/20 text-white ${validationErrors.selectedModel ? 'border-red-500' : ''}`}>
+                            <SelectValue placeholder="Select a model" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {llmModels.map(model => (
+                              <SelectItem key={model.id} value={model.id}>
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{model.name}</span>
+                                  <Badge variant="outline" className="ml-2">
+                                    {model.parameters}B
+                                  </Badge>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {validationErrors.selectedModel && (
+                          <p className="text-red-400 text-sm">{validationErrors.selectedModel}</p>
                         )}
                       </div>
 
+                      {/* Use Case */}
+                      <div className="space-y-2">
+                        <Label className="text-white">Use Case</Label>
+                        <Select value={useCase} onValueChange={setUseCase}>
+                          <SelectTrigger className={`bg-white/5 border-white/20 text-white ${validationErrors.useCase ? 'border-red-500' : ''}`}>
+                            <SelectValue placeholder="Select use case" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="inference">Inference Only</SelectItem>
+                            <SelectItem value="training">Training/Fine-tuning</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {validationErrors.useCase && (
+                          <p className="text-red-400 text-sm">{validationErrors.useCase}</p>
+                        )}
+                      </div>
+
+                      {/* Quantization */}
+                      <div className="space-y-2">
+                        <Label className="text-white">Quantization</Label>
+                        <Select value={quantization} onValueChange={setQuantization}>
+                          <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="fp16">FP16 (Half Precision)</SelectItem>
+                            <SelectItem value="int8">INT8 (8-bit)</SelectItem>
+                            <SelectItem value="int4">INT4 (4-bit)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Cloud Provider Selection */}
+                      <div className="space-y-2">
+                        <Label className="text-white">Cloud Provider (for comparison)</Label>
+                        <Select value={cloudProvider} onValueChange={setCloudProvider}>
+                          <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="aws">Amazon Web Services</SelectItem>
+                            <SelectItem value="gcp">Google Cloud Platform</SelectItem>
+                            <SelectItem value="azure">Microsoft Azure</SelectItem>
+                            <SelectItem value="oci">Oracle Cloud Infrastructure</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Additional Parameters */}
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-white/5 rounded-lg">
-                          <p className="text-white/70 text-sm">On-Premises TCO</p>
-                          <p className="text-white font-semibold text-lg">
-                            {formatCurrency(results.onPremTCO.tco.total)}
-                          </p>
-                          <p className="text-white/60 text-xs">
-                            {formatCurrency(results.onPremTCO.tco.monthly_average)}/month avg
-                          </p>
+                        <div className="space-y-2">
+                          <Label className="text-white">Time Horizon (months)</Label>
+                          <Input
+                            type="number"
+                            value={timeHorizon}
+                            onChange={(e) => setTimeHorizon(e.target.value)}
+                            className={`bg-white/5 border-white/20 text-white ${validationErrors.timeHorizon ? 'border-red-500' : ''}`}
+                          />
+                          {validationErrors.timeHorizon && (
+                            <p className="text-red-400 text-sm">{validationErrors.timeHorizon}</p>
+                          )}
                         </div>
-                        <div className="p-3 bg-white/5 rounded-lg">
-                          <p className="text-white/70 text-sm">Cloud TCO</p>
-                          <p className="text-white font-semibold text-lg">
-                            {results.cloudTCO ? formatCurrency(results.cloudTCO.total_cost) : 'N/A'}
-                          </p>
-                          {results.cloudTCO && (
-                            <p className="text-white/60 text-xs">
-                              {formatCurrency(results.cloudTCO.monthly_cost)}/month
-                            </p>
+                        <div className="space-y-2">
+                          <Label className="text-white">Electricity Cost ($/kWh)</Label>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={electricityCost}
+                            onChange={(e) => setElectricityCost(e.target.value)}
+                            className={`bg-white/5 border-white/20 text-white ${validationErrors.electricityCost ? 'border-red-500' : ''}`}
+                          />
+                          {validationErrors.electricityCost && (
+                            <p className="text-red-400 text-sm">{validationErrors.electricityCost}</p>
                           )}
                         </div>
                       </div>
+
+                      {/* Warnings */}
+                      {warnings.length > 0 && (
+                        <div className="space-y-2">
+                          {warnings.map((warning, index) => (
+                            <Alert key={index} className="bg-yellow-500/10 border-yellow-500/20">
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription className="text-yellow-400">
+                                {warning.message}
+                              </AlertDescription>
+                            </Alert>
+                          ))}
+                        </div>
+                      )}
+
+                      <Button 
+                        onClick={calculateRequirements}
+                        className="w-full bg-gradient-to-r from-green-400 to-cyan-400 text-black hover:from-green-500 hover:to-cyan-500"
+                        disabled={!selectedModel || !useCase || isCalculating || Object.keys(validationErrors).length > 0}
+                      >
+                        {isCalculating ? 'Calculating...' : 'Calculate Requirements'}
+                      </Button>
                     </CardContent>
                   </Card>
 
-                  {/* Optimization Suggestions */}
-                  {suggestions.length > 0 && (
+                  {/* Results */}
+                  {results && (
+                    <div className="space-y-6">
+                      {/* Hardware Recommendations */}
+                      <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Server className="w-5 h-5" />
+                            Hardware Recommendations
+                          </CardTitle>
+                          <CardDescription className="text-white/70">
+                            Optimal configuration for {results.model.name}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {/* Memory Requirements */}
+                          <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                            <h3 className="text-white font-semibold mb-2">Memory Requirements</h3>
+                            <p className="text-white/80">
+                              {results.requiredMemory} GB VRAM required ({quantization.toUpperCase()})
+                            </p>
+                          </div>
+
+                          {/* GPU Recommendation */}
+                          <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                            <h3 className="text-white font-semibold mb-2">Recommended GPU</h3>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-white font-medium">{results.gpuConfig.recommended.name}</p>
+                                <p className="text-white/70">{results.gpuConfig.recommended.vram} GB VRAM</p>
+                                {results.gpuConfig.multiGpu && (
+                                  <p className="text-orange-400">Requires {results.gpuConfig.gpuCount} GPUs</p>
+                                )}
+                              </div>
+                              <Badge className="bg-green-500/20 text-green-400">
+                                {formatCurrency(results.gpuConfig.recommended.price_usd)}
+                              </Badge>
+                            </div>
+                          </div>
+
+                          {/* System Specifications */}
+                          <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                            <h3 className="text-white font-semibold mb-2">Complete System</h3>
+                            <div className="grid grid-cols-2 gap-2 text-sm text-white/80">
+                              <div>• GPU: {results.gpuConfig.gpuCount}x {results.gpuConfig.recommended.name}</div>
+                              <div>• CPU: {results.systemRecommendations.cpu.cores} cores</div>
+                              <div>• RAM: {results.systemRecommendations.memory.total_gb} GB</div>
+                              <div>• Storage: {results.systemRecommendations.storage.capacity_gb} GB NVMe</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Deployment Comparison */}
+                      <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5" />
+                            Deployment Comparison
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="mb-4 p-4 bg-gradient-to-r from-green-500/10 to-cyan-500/10 rounded-lg border border-green-500/20">
+                            <h3 className="text-white font-semibold mb-2">Recommendation</h3>
+                            <p className="text-white/80 capitalize">
+                              <strong>{results.comparison.recommendation}</strong> - {results.comparison.reason}
+                            </p>
+                            {results.comparison.savings && (
+                              <p className="text-green-400 mt-1">
+                                Potential savings: {formatCurrency(results.comparison.savings)}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="p-3 bg-white/5 rounded-lg">
+                              <p className="text-white/70 text-sm">On-Premises TCO</p>
+                              <p className="text-white font-semibold text-lg">
+                                {formatCurrency(results.onPremTCO.tco.total)}
+                              </p>
+                              <p className="text-white/60 text-xs">
+                                {formatCurrency(results.onPremTCO.tco.monthly_average)}/month avg
+                              </p>
+                            </div>
+                            <div className="p-3 bg-white/5 rounded-lg">
+                              <p className="text-white/70 text-sm">Cloud TCO</p>
+                              <p className="text-white font-semibold text-lg">
+                                {results.cloudTCO ? formatCurrency(results.cloudTCO.total_cost) : 'N/A'}
+                              </p>
+                              {results.cloudTCO && (
+                                <p className="text-white/60 text-xs">
+                                  {formatCurrency(results.cloudTCO.monthly_cost)}/month
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Optimization Suggestions */}
+                      {suggestions.length > 0 && (
+                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                          <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                              <Lightbulb className="w-5 h-5" />
+                              Optimization Suggestions
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {suggestions.map((suggestion, index) => (
+                              <Alert key={index} className="bg-blue-500/10 border-blue-500/20">
+                                <Info className="h-4 w-4" />
+                                <AlertDescription className="text-blue-400">
+                                  <strong>{suggestion.title}:</strong> {suggestion.message}
+                                </AlertDescription>
+                              </Alert>
+                            ))}
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <ModelComparison 
+                  models={llmModels} 
+                  onModelSelect={(modelId) => {
+                    setSelectedModel(modelId)
+                    setActiveTab('calculator')
+                  }}
+                />
+              )}
+
+              {/* Charts Section */}
+              {results && activeTab === 'calculator' && (
+                <div className="mt-12">
+                  <div className="grid lg:grid-cols-3 gap-8">
+                    {/* TCO Comparison Chart */}
                     <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                       <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
-                          <Lightbulb className="w-5 h-5" />
-                          Optimization Suggestions
+                          <BarChart3 className="w-5 h-5" />
+                          TCO Comparison
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-3">
-                        {suggestions.map((suggestion, index) => (
-                          <Alert key={index} className="bg-blue-500/10 border-blue-500/20">
-                            <Info className="h-4 w-4" />
-                            <AlertDescription className="text-blue-400">
-                              <strong>{suggestion.title}:</strong> {suggestion.message}
-                            </AlertDescription>
-                          </Alert>
-                        ))}
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={prepareTCOChartData()}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                            <XAxis dataKey="name" stroke="#ffffff80" />
+                            <YAxis stroke="#ffffff80" tickFormatter={(value) => `$${(value/1000).toFixed(0)}K`} />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: 'rgba(0,0,0,0.8)', 
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                borderRadius: '8px'
+                              }}
+                              formatter={(value) => [formatCurrency(value), '']}
+                            />
+                            <Bar dataKey="CapEx" stackId="a" fill="#00ff88" />
+                            <Bar dataKey="OpEx" stackId="a" fill="#ff8c00" />
+                          </BarChart>
+                        </ResponsiveContainer>
                       </CardContent>
                     </Card>
-                  )}
+
+                    {/* Cost Breakdown Pie Chart */}
+                    <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                          <DollarSign className="w-5 h-5" />
+                          Cost Breakdown
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <PieChart>
+                            <Pie
+                              data={prepareCostBreakdownData()}
+                              cx="50%"
+                              cy="50%"
+                              outerRadius={100}
+                              dataKey="value"
+                              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                              {prepareCostBreakdownData().map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: 'rgba(0,0,0,0.8)', 
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                borderRadius: '8px'
+                              }}
+                              formatter={(value) => [formatCurrency(value), '']}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+
+                    {/* TCO Trend Chart */}
+                    <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5" />
+                          TCO Over Time
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <LineChart data={prepareTCOTrendData()}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                            <XAxis dataKey="month" stroke="#ffffff80" />
+                            <YAxis stroke="#ffffff80" tickFormatter={(value) => `$${(value/1000).toFixed(0)}K`} />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: 'rgba(0,0,0,0.8)', 
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                borderRadius: '8px'
+                              }}
+                              formatter={(value) => [formatCurrency(value), '']}
+                            />
+                            <Line type="monotone" dataKey="onPremises" stroke="#00ff88" strokeWidth={2} name="On-Premises" />
+                            <Line type="monotone" dataKey="cloud" stroke="#ff8c00" strokeWidth={2} name="Cloud" />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               )}
             </div>
-          ) : (
-            <ModelComparison 
-              models={llmModels} 
-              onModelSelect={(modelId) => {
-                setSelectedModel(modelId)
-                setActiveTab('calculator')
-              }}
-            />
-          )}
-
-          {/* Charts Section */}
-          {results && activeTab === 'calculator' && (
-            <div className="mt-12 grid lg:grid-cols-3 gap-8">
-              {/* TCO Comparison Chart */}
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5" />
-                    TCO Comparison
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={prepareTCOChartData()}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-                      <XAxis dataKey="name" stroke="#ffffff80" />
-                      <YAxis stroke="#ffffff80" tickFormatter={(value) => `$${(value/1000).toFixed(0)}K`} />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(0,0,0,0.8)', 
-                          border: '1px solid rgba(255,255,255,0.2)',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value) => [formatCurrency(value), '']}
-                      />
-                      <Bar dataKey="CapEx" stackId="a" fill="#00ff88" />
-                      <Bar dataKey="OpEx" stackId="a" fill="#ff8c00" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Cost Breakdown Pie Chart */}
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    Cost Breakdown
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={prepareCostBreakdownData()}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {prepareCostBreakdownData().map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(0,0,0,0.8)', 
-                          border: '1px solid rgba(255,255,255,0.2)',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value) => [formatCurrency(value), '']}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* TCO Trend Chart */}
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    TCO Over Time
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={prepareTCOTrendData()}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-                      <XAxis dataKey="month" stroke="#ffffff80" />
-                      <YAxis stroke="#ffffff80" tickFormatter={(value) => `$${(value/1000).toFixed(0)}K`} />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(0,0,0,0.8)', 
-                          border: '1px solid rgba(255,255,255,0.2)',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value) => [formatCurrency(value), '']}
-                      />
-                      <Line type="monotone" dataKey="onPremises" stroke="#00ff88" strokeWidth={2} name="On-Premises" />
-                      <Line type="monotone" dataKey="cloud" stroke="#ff8c00" strokeWidth={2} name="Cloud" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+          </div>
         </div>
       </section>
 
