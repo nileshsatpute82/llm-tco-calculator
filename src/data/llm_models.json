@@ -1,0 +1,142 @@
+[
+  {
+    "id": "llama-3-8b",
+    "name": "Llama 3 8B",
+    "parameters": 8,
+    "memory_requirements": {
+      "inference_fp16": 16,
+      "inference_int8": 8,
+      "inference_int4": 4,
+      "training_fp16": 32,
+      "training_int8": 16
+    },
+    "category": "General Purpose",
+    "description": "Meta's Llama 3 8B model, excellent for general-purpose tasks"
+  },
+  {
+    "id": "llama-3-70b",
+    "name": "Llama 3 70B",
+    "parameters": 70,
+    "memory_requirements": {
+      "inference_fp16": 140,
+      "inference_int8": 70,
+      "inference_int4": 35,
+      "training_fp16": 280,
+      "training_int8": 140
+    },
+    "category": "Large Scale",
+    "description": "Meta's Llama 3 70B model, high performance for complex tasks"
+  },
+  {
+    "id": "mistral-7b",
+    "name": "Mistral 7B",
+    "parameters": 7,
+    "memory_requirements": {
+      "inference_fp16": 14,
+      "inference_int8": 7,
+      "inference_int4": 3.5,
+      "training_fp16": 28,
+      "training_int8": 14
+    },
+    "category": "Efficient",
+    "description": "Mistral AI's 7B model, optimized for efficiency and performance"
+  },
+  {
+    "id": "falcon-7b",
+    "name": "Falcon 7B",
+    "parameters": 7,
+    "memory_requirements": {
+      "inference_fp16": 14,
+      "inference_int8": 7,
+      "inference_int4": 3.5,
+      "training_fp16": 28,
+      "training_int8": 14
+    },
+    "category": "Open Source",
+    "description": "Technology Innovation Institute's Falcon 7B model"
+  },
+  {
+    "id": "falcon-40b",
+    "name": "Falcon 40B",
+    "parameters": 40,
+    "memory_requirements": {
+      "inference_fp16": 80,
+      "inference_int8": 40,
+      "inference_int4": 20,
+      "training_fp16": 160,
+      "training_int8": 80
+    },
+    "category": "Large Scale",
+    "description": "Technology Innovation Institute's Falcon 40B model"
+  },
+  {
+    "id": "falcon-180b",
+    "name": "Falcon 180B",
+    "parameters": 180,
+    "memory_requirements": {
+      "inference_fp16": 360,
+      "inference_int8": 180,
+      "inference_int4": 90,
+      "training_fp16": 720,
+      "training_int8": 360
+    },
+    "category": "Ultra Large",
+    "description": "Technology Innovation Institute's Falcon 180B model, state-of-the-art performance"
+  },
+  {
+    "id": "mixtral-8x7b",
+    "name": "Mixtral 8x7B",
+    "parameters": 47,
+    "memory_requirements": {
+      "inference_fp16": 94,
+      "inference_int8": 47,
+      "inference_int4": 24,
+      "training_fp16": 188,
+      "training_int8": 94
+    },
+    "category": "Mixture of Experts",
+    "description": "Mistral AI's Mixture of Experts model with 8x7B architecture"
+  },
+  {
+    "id": "gemma-7b",
+    "name": "Gemma 7B",
+    "parameters": 7,
+    "memory_requirements": {
+      "inference_fp16": 14,
+      "inference_int8": 7,
+      "inference_int4": 3.5,
+      "training_fp16": 28,
+      "training_int8": 14
+    },
+    "category": "Google",
+    "description": "Google's Gemma 7B model, lightweight and efficient"
+  },
+  {
+    "id": "claude-haiku",
+    "name": "Claude 3 Haiku",
+    "parameters": 20,
+    "memory_requirements": {
+      "inference_fp16": 40,
+      "inference_int8": 20,
+      "inference_int4": 10,
+      "training_fp16": 80,
+      "training_int8": 40
+    },
+    "category": "Anthropic",
+    "description": "Anthropic's Claude 3 Haiku, fast and efficient"
+  },
+  {
+    "id": "gpt-neox-20b",
+    "name": "GPT-NeoX 20B",
+    "parameters": 20,
+    "memory_requirements": {
+      "inference_fp16": 40,
+      "inference_int8": 20,
+      "inference_int4": 10,
+      "training_fp16": 80,
+      "training_int8": 40
+    },
+    "category": "EleutherAI",
+    "description": "EleutherAI's GPT-NeoX 20B model, open-source GPT alternative"
+  }
+]

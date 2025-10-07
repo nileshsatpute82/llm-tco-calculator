@@ -1,0 +1,112 @@
+[
+  {
+    "id": "rtx-3060",
+    "name": "NVIDIA RTX 3060",
+    "vram": 12,
+    "price_usd": 329,
+    "type": "consumer",
+    "power_consumption": 170,
+    "compute_capability": "8.6",
+    "tensor_cores": true,
+    "category": "Entry Level"
+  },
+  {
+    "id": "rtx-3080",
+    "name": "NVIDIA RTX 3080",
+    "vram": 10,
+    "price_usd": 699,
+    "type": "consumer",
+    "power_consumption": 320,
+    "compute_capability": "8.6",
+    "tensor_cores": true,
+    "category": "High Performance"
+  },
+  {
+    "id": "rtx-3090",
+    "name": "NVIDIA RTX 3090",
+    "vram": 24,
+    "price_usd": 1499,
+    "type": "consumer",
+    "power_consumption": 350,
+    "compute_capability": "8.6",
+    "tensor_cores": true,
+    "category": "Enthusiast"
+  },
+  {
+    "id": "rtx-4080",
+    "name": "NVIDIA RTX 4080",
+    "vram": 16,
+    "price_usd": 1199,
+    "type": "consumer",
+    "power_consumption": 320,
+    "compute_capability": "8.9",
+    "tensor_cores": true,
+    "category": "High Performance"
+  },
+  {
+    "id": "rtx-4090",
+    "name": "NVIDIA RTX 4090",
+    "vram": 24,
+    "price_usd": 1599,
+    "type": "consumer",
+    "power_consumption": 450,
+    "compute_capability": "8.9",
+    "tensor_cores": true,
+    "category": "Flagship"
+  },
+  {
+    "id": "rtx-6000-ada",
+    "name": "NVIDIA RTX 6000 Ada",
+    "vram": 48,
+    "price_usd": 6800,
+    "type": "workstation",
+    "power_consumption": 300,
+    "compute_capability": "8.9",
+    "tensor_cores": true,
+    "category": "Professional"
+  },
+  {
+    "id": "a100-40gb",
+    "name": "NVIDIA A100 40GB",
+    "vram": 40,
+    "price_usd": 11000,
+    "type": "datacenter",
+    "power_consumption": 400,
+    "compute_capability": "8.0",
+    "tensor_cores": true,
+    "category": "Data Center"
+  },
+  {
+    "id": "a100-80gb",
+    "name": "NVIDIA A100 80GB",
+    "vram": 80,
+    "price_usd": 15000,
+    "type": "datacenter",
+    "power_consumption": 400,
+    "compute_capability": "8.0",
+    "tensor_cores": true,
+    "category": "Data Center"
+  },
+  {
+    "id": "h100",
+    "name": "NVIDIA H100",
+    "vram": 80,
+    "price_usd": 25000,
+    "type": "datacenter",
+    "power_consumption": 700,
+    "compute_capability": "9.0",
+    "tensor_cores": true,
+    "category": "Next Gen"
+  },
+  {
+    "id": "v100",
+    "name": "NVIDIA V100",
+    "vram": 32,
+    "price_usd": 8000,
+    "type": "datacenter",
+    "power_consumption": 300,
+    "compute_capability": "7.0",
+    "tensor_cores": true,
+    "category": "Previous Gen"
+  }
+]

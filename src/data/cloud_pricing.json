@@ -1,0 +1,107 @@
+{
+  "aws": {
+    "name": "Amazon Web Services",
+    "regions": {
+      "us-east-1": "US East (N. Virginia)",
+      "us-west-2": "US West (Oregon)",
+      "eu-west-1": "Europe (Ireland)"
+    },
+    "instances": {
+      "p3.2xlarge": {
+        "gpu": "V100",
+        "gpu_count": 1,
+        "hourly_rate": 3.06
+      },
+      "p3.8xlarge": {
+        "gpu": "V100",
+        "gpu_count": 4,
+        "hourly_rate": 12.24
+      },
+      "p4d.24xlarge": {
+        "gpu": "A100",
+        "gpu_count": 8,
+        "hourly_rate": 32.77
+      },
+      "p5.48xlarge": {
+        "gpu": "H100",
+        "gpu_count": 8,
+        "hourly_rate": 98.32
+      }
+    }
+  },
+  "gcp": {
+    "name": "Google Cloud Platform",
+    "regions": {
+      "us-central1": "US Central (Iowa)",
+      "us-west1": "US West (Oregon)",
+      "europe-west4": "Europe (Netherlands)"
+    },
+    "instances": {
+      "a2-highgpu-1g": {
+        "gpu": "A100",
+        "gpu_count": 1,
+        "hourly_rate": 4.11
+      },
+      "a2-highgpu-2g": {
+        "gpu": "A100",
+        "gpu_count": 2,
+        "hourly_rate": 8.22
+      },
+      "a2-highgpu-4g": {
+        "gpu": "A100",
+        "gpu_count": 4,
+        "hourly_rate": 16.44
+      },
+      "a2-highgpu-8g": {
+        "gpu": "A100",
+        "gpu_count": 8,
+        "hourly_rate": 32.88
+      }
+    }
+  },
+  "azure": {
+    "name": "Microsoft Azure",
+    "regions": {
+      "eastus": "East US",
+      "westus2": "West US 2",
+      "westeurope": "West Europe"
+    },
+    "instances": {
+      "Standard_NC6s_v3": {
+        "gpu": "V100",
+        "gpu_count": 1,
+        "hourly_rate": 3.06
+      },
+      "Standard_NC24s_v3": {
+        "gpu": "V100",
+        "gpu_count": 4,
+        "hourly_rate": 12.24
+      },
+      "Standard_ND96asr_v4": {
+        "gpu": "A100",
+        "gpu_count": 8,
+        "hourly_rate": 33.12
+      }
+    }
+  },
+  "oci": {
+    "name": "Oracle Cloud Infrastructure",
+    "regions": {
+      "us-ashburn-1": "US East (Ashburn)",
+      "us-phoenix-1": "US West (Phoenix)",
+      "eu-frankfurt-1": "Europe (Frankfurt)"
+    },
+    "instances": {
+      "BM.GPU4.8": {
+        "gpu": "A100",
+        "gpu_count": 8,
+        "hourly_rate": 28.80
+      },
+      "BM.GPU.H100.8": {
+        "gpu": "H100",
+        "gpu_count": 8,
+        "hourly_rate": 85.00
+      }
+    }
+  }
+}
