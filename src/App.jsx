@@ -228,47 +228,15 @@ function App() {
               >
                 Compare Models
               </button>
-              <Button className="bg-gradient-to-r from-green-400 to-cyan-400 text-black hover:from-green-500 hover:to-cyan-500">
-                Get Started
-              </Button>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            LLM TCO and GPU
-            <br />
-            <span className="bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
-              Sizing Calculator
-            </span>
-          </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
-            Estimate optimal server configuration and costs for running Large Language Models. 
-            Compare on-premises vs cloud deployment with precision.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
-              <Cpu className="w-4 h-4 mr-2" />
-              Hardware Sizing
-            </Badge>
-            <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
-              <DollarSign className="w-4 h-4 mr-2" />
-              TCO Analysis
-            </Badge>
-            <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
-              <Cloud className="w-4 h-4 mr-2" />
-              Cloud vs On-Prem
-            </Badge>
-          </div>
-        </div>
-      </section>
+
 
       {/* Main Content */}
-      <section className="py-16 px-6">
+      <section className="py-8 px-6">
         <div className="container mx-auto max-w-7xl">
           {activeTab === 'calculator' ? (
             <div className="grid lg:grid-cols-2 gap-8">
