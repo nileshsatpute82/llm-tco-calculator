@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.j
 import { Badge } from '@/components/ui/badge.jsx'
 import { Database, Cpu, Cloud, Zap } from 'lucide-react'
 
-const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts }) => {
+const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts, cloudOpCosts }) => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -25,7 +25,7 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts }) => {
       </div>
 
       <Tabs defaultValue="llm-models" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-white/10">
+        <TabsList className="grid w-full grid-cols-5 bg-white/10">
           <TabsTrigger value="llm-models" className="data-[state=active]:bg-white/20">
             LLM Models
           </TabsTrigger>
@@ -37,6 +37,9 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts }) => {
           </TabsTrigger>
           <TabsTrigger value="onprem-costs" className="data-[state=active]:bg-white/20">
             On-Prem Costs
+          </TabsTrigger>
+          <TabsTrigger value="cloud-ops" className="data-[state=active]:bg-white/20">
+            Cloud Ops
           </TabsTrigger>
         </TabsList>
 
@@ -414,6 +417,145 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts }) => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Cloud Operational Costs Tab */}
+        <TabsContent value="cloud-ops" className="space-y-4">
+          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Cloud className="w-5 h-5" />
+                Cloud Operational Costs
+              </CardTitle>
+              <CardDescription className="text-white/70">
+                Additional operational costs for cloud deployments often overlooked in basic TCO calculations
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="staffing" className="w-full">
+                <TabsList className="grid w-full grid-cols-4 bg-white/5">
+                  <TabsTrigger value="staffing" className="data-[state=active]:bg-white/10">Staffing</TabsTrigger>
+                  <TabsTrigger value="operational" className="data-[state=active]:bg-white/10">Operational</TabsTrigger>
+                  <TabsTrigger value="compliance" className="data-[state=active]:bg-white/10">Compliance</TabsTrigger>
+                  <TabsTrigger value="scaling" className="data-[state=active]:bg-white/10">Scaling</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="staffing" className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-white/20">
+                          <th className="text-left p-2 text-white font-medium">Role</th>
+                          <th className="text-left p-2 text-white font-medium">Annual Salary</th>
+                          <th className="text-left p-2 text-white font-medium">Benefits</th>
+                          <th className="text-left p-2 text-white font-medium">Allocation</th>
+                          <th className="text-left p-2 text-white font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cloudOpCosts && Object.entries(cloudOpCosts.cloudOperationalCosts.staffingCosts).map(([key, staff]) => (
+                          <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-2 text-white">{staff.title}</td>
+                            <td className="p-2 text-white">{formatCurrency(staff.annualSalary)}</td>
+                            <td className="p-2 text-white">{(staff.benefits * 100).toFixed(0)}%</td>
+                            <td className="p-2 text-white">{(staff.allocation * 100).toFixed(0)}%</td>
+                            <td className="p-2 text-white/70 text-xs">{staff.description}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="operational" className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-white/20">
+                          <th className="text-left p-2 text-white font-medium">Service</th>
+                          <th className="text-left p-2 text-white font-medium">Monthly Cost</th>
+                          <th className="text-left p-2 text-white font-medium">Scaling</th>
+                          <th className="text-left p-2 text-white font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cloudOpCosts && Object.entries(cloudOpCosts.cloudOperationalCosts.operationalCosts).map(([key, ops]) => (
+                          <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-2 text-white">{ops.title}</td>
+                            <td className="p-2 text-white">{formatCurrency(ops.monthlyCost)}</td>
+                            <td className="p-2 text-white">
+                              <Badge variant="outline" className="text-xs">
+                                {ops.scalingFactor === 'per_gpu' ? 'Per GPU' : 'Fixed'}
+                              </Badge>
+                            </td>
+                            <td className="p-2 text-white/70 text-xs">{ops.description}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="compliance" className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-white/20">
+                          <th className="text-left p-2 text-white font-medium">Service</th>
+                          <th className="text-left p-2 text-white font-medium">Cost</th>
+                          <th className="text-left p-2 text-white font-medium">Frequency</th>
+                          <th className="text-left p-2 text-white font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cloudOpCosts && Object.entries(cloudOpCosts.cloudOperationalCosts.complianceAndAudit).map(([key, comp]) => (
+                          <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-2 text-white">{comp.title}</td>
+                            <td className="p-2 text-white">
+                              {comp.annualCost ? formatCurrency(comp.annualCost) : formatCurrency(comp.monthlyCost)}
+                            </td>
+                            <td className="p-2 text-white">
+                              <Badge variant="outline" className="text-xs">
+                                {comp.frequency || 'Monthly'}
+                              </Badge>
+                            </td>
+                            <td className="p-2 text-white/70 text-xs">{comp.description}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="scaling" className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-white/20">
+                          <th className="text-left p-2 text-white font-medium">Deployment Scale</th>
+                          <th className="text-left p-2 text-white font-medium">Staffing Multiplier</th>
+                          <th className="text-left p-2 text-white font-medium">Operational Multiplier</th>
+                          <th className="text-left p-2 text-white font-medium">Compliance Multiplier</th>
+                          <th className="text-left p-2 text-white font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cloudOpCosts && Object.entries(cloudOpCosts.cloudOperationalCosts.scalingFactors).map(([key, factor]) => (
+                          <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-2 text-white">{factor.description}</td>
+                            <td className="p-2 text-white">{factor.staffingMultiplier}x</td>
+                            <td className="p-2 text-white">{factor.operationalMultiplier}x</td>
+                            <td className="p-2 text-white">{factor.complianceMultiplier}x</td>
+                            <td className="p-2 text-white/70 text-xs">{factor.note}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

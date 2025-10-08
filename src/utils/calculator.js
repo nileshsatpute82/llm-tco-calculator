@@ -155,7 +155,7 @@ export const calculateTCO = (gpuConfig, timeHorizonMonths, electricityCost, depl
   };
 };
 
-export const calculateCloudTCO = (requiredMemory, cloudProvider, timeHorizonMonths) => {
+export const calculateCloudTCO = (requiredMemory, cloudProvider, timeHorizonMonths, cloudOpCosts = null) => {
   // Find suitable cloud instances
   const instances = Object.entries(cloudProvider.instances);
   const suitableInstances = instances.filter(([_, instance]) => {
@@ -170,9 +170,70 @@ export const calculateCloudTCO = (requiredMemory, cloudProvider, timeHorizonMont
   const sortedInstances = suitableInstances.sort((a, b) => a[1].hourly_rate - b[1].hourly_rate);
   const [instanceName, instance] = sortedInstances[0];
   
+  // Determine deployment scale based on GPU count
+  const gpuCount = instance.gpu_count;
+  let scale = 'medium';
+  if (gpuCount <= 4) scale = 'small';
+  else if (gpuCount >= 17) scale = 'large';
+  
   const hoursPerMonth = 24 * 30; // Assuming 24/7 operation
-  const monthlyCost = instance.hourly_rate * hoursPerMonth;
-  const totalCost = monthlyCost * timeHorizonMonths;
+  const baseComputeCost = instance.hourly_rate * hoursPerMonth;
+  
+  // Enhanced cloud operational costs
+  let staffingOpEx = 0;
+  let operationalOpEx = 0;
+  let complianceOpEx = 0;
+  let hiddenCosts = 0;
+  
+  if (cloudOpCosts) {
+    const costs = cloudOpCosts.cloudOperationalCosts;
+    const staff = costs.staffingCosts;
+    const ops = costs.operationalCosts;
+    const compliance = costs.complianceAndAudit;
+    const hidden = costs.hiddenCosts;
+    const scaling = costs.scalingFactors[scale + 'Deployment'];
+    
+    // Monthly staffing costs
+    const monthlyStaffing = (
+      (staff.cloudInfrastructureEngineer.annualSalary * (1 + staff.cloudInfrastructureEngineer.benefits) * staff.cloudInfrastructureEngineer.allocation) +
+      (staff.cloudSecuritySpecialist.annualSalary * (1 + staff.cloudSecuritySpecialist.benefits) * staff.cloudSecuritySpecialist.allocation) +
+      (staff.cloudArchitect.annualSalary * (1 + staff.cloudArchitect.benefits) * staff.cloudArchitect.allocation)
+    ) / 12 * (scaling?.staffingMultiplier || 1.0);
+    
+    staffingOpEx = monthlyStaffing * timeHorizonMonths;
+    
+    // Monthly operational costs
+    const monthlyOperational = (
+      (ops.cloudMonitoring.monthlyCost * (ops.cloudMonitoring.scalingFactor === 'per_gpu' ? gpuCount : 1)) +
+      (ops.cloudSecurity.monthlyCost * (ops.cloudSecurity.scalingFactor === 'per_gpu' ? gpuCount : 1)) +
+      (ops.backupAndDR.monthlyCost * (ops.backupAndDR.scalingFactor === 'per_gpu' ? gpuCount : 1)) +
+      (ops.networkingAndCDN.monthlyCost * (ops.networkingAndCDN.scalingFactor === 'per_gpu' ? gpuCount : 1))
+    ) * (scaling?.operationalMultiplier || 1.0);
+    
+    operationalOpEx = monthlyOperational * timeHorizonMonths;
+    
+    // Annual compliance costs
+    const annualCompliance = (
+      compliance.securityAudit.annualCost +
+      compliance.legalAndCompliance.annualCost +
+      (compliance.cloudCostOptimization.monthlyCost * 12)
+    ) * (scaling?.complianceMultiplier || 1.0);
+    
+    complianceOpEx = annualCompliance * (timeHorizonMonths / 12);
+    
+    // Hidden costs as percentages
+    const monthlyHidden = baseComputeCost * (
+      (hidden.dataTransferCosts.monthlyPercentage || 0) +
+      (hidden.scalingInefficiency.monthlyPercentage || 0)
+    );
+    const annualHidden = (baseComputeCost * 12) * (hidden.cloudVendorLockIn.annualPercentage || 0);
+    
+    hiddenCosts = (monthlyHidden * timeHorizonMonths) + (annualHidden * (timeHorizonMonths / 12));
+  }
+  
+  const totalOperationalCosts = staffingOpEx + operationalOpEx + complianceOpEx + hiddenCosts;
+  const monthlyCost = baseComputeCost + (totalOperationalCosts / timeHorizonMonths);
+  const totalCost = (baseComputeCost * timeHorizonMonths) + totalOperationalCosts;
   
   return {
     provider: cloudProvider.name,
@@ -180,8 +241,19 @@ export const calculateCloudTCO = (requiredMemory, cloudProvider, timeHorizonMont
     gpu_type: instance.gpu,
     gpu_count: instance.gpu_count,
     hourly_rate: instance.hourly_rate,
+    base_compute_monthly: baseComputeCost,
+    operational_costs: {
+      staffing: staffingOpEx,
+      operational: operationalOpEx,
+      compliance: complianceOpEx,
+      hidden: hiddenCosts,
+      total: totalOperationalCosts,
+      monthly_average: totalOperationalCosts / timeHorizonMonths
+    },
     monthly_cost: monthlyCost,
-    total_cost: totalCost
+    total_cost: totalCost,
+    scale: scale,
+    enhanced: !!cloudOpCosts
   };
 };
 

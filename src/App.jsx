@@ -11,12 +11,14 @@ import { Calculator, Cpu, Zap, Cloud, Server, DollarSign, TrendingUp, BarChart3,
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
 import './App.css'
 
-// Import data
-import llmModels from './data/llm_models.json'
-import gpuSpecs from './data/gpu_specifications.json'
-import cloudPricing from './data/cloud_pricing.json'
+// Import data files
+import llmModels from './data/llm_models.json';
+import gpuSpecs from './data/gpu_specifications.json';
+import cloudPricing from './data/cloud_pricing.json';
+import onPremCosts from './data/onprem_costs.json';
+import cloudOpCosts from './data/cloud_operational_costs.json';
 
-// Import utilities
+// Import calculator functions
 import { 
   calculateMemoryRequirement, 
   findOptimalGPUs, 
@@ -37,8 +39,7 @@ import {
 import ModelComparison from './components/ModelComparison.jsx'
 import MasterData from './components/MasterData.jsx'
 
-// Import on-premises cost data
-import onPremCosts from './data/onprem_costs.json'
+
 
 function App() {
   const [selectedModel, setSelectedModel] = useState('')
@@ -109,7 +110,8 @@ function App() {
       const cloudTCO = calculateCloudTCO(
         requiredMemory, 
         selectedCloudProvider, 
-        parseInt(timeHorizon)
+        parseInt(timeHorizon),
+        cloudOpCosts
       )
       
       // Compare deployment options
@@ -570,22 +572,41 @@ function App() {
                                       <span className="text-white">{results.cloudTCO.instance_type}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-white/70">Hourly Rate:</span>
-                                      <span className="text-white">{formatCurrency(results.cloudTCO.hourly_rate)}/hour</span>
+                                      <span className="text-white/70">Base Compute (Monthly):</span>
+                                      <span className="text-white">{formatCurrency(results.cloudTCO.base_compute_monthly || 0)}</span>
                                     </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-white/70">Monthly Cost:</span>
-                                      <span className="text-white">{formatCurrency(results.cloudTCO.hourly_rate)} × 730 hours = {formatCurrency(results.cloudTCO.monthly_cost)}</span>
-                                    </div>
+                                    {results.cloudTCO.enhanced && (
+                                      <>
+                                        <div className="flex justify-between">
+                                          <span className="text-white/70">Staffing Costs:</span>
+                                          <span className="text-white">{formatCurrency(results.cloudTCO.operational_costs?.staffing || 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-white/70">Operational Costs:</span>
+                                          <span className="text-white">{formatCurrency(results.cloudTCO.operational_costs?.operational || 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-white/70">Compliance & Audit:</span>
+                                          <span className="text-white">{formatCurrency(results.cloudTCO.operational_costs?.compliance || 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-white/70">Hidden Costs:</span>
+                                          <span className="text-white">{formatCurrency(results.cloudTCO.operational_costs?.hidden || 0)}</span>
+                                        </div>
+                                        <div className="text-xs text-white/60 mt-1">
+                                          Includes: Cloud engineers, monitoring, security, data transfer
+                                        </div>
+                                      </>
+                                    )}
                                     <div className="border-t border-white/20 pt-2">
                                       <div className="flex justify-between">
-                                        <span className="text-white/70">Total ({timeHorizon || 36} months):</span>
-                                        <span className="text-white">{formatCurrency(results.cloudTCO.monthly_cost)} × {timeHorizon || 36} = {formatCurrency(results.cloudTCO.total_cost)}</span>
+                                        <span className="text-white/70">Monthly Total:</span>
+                                        <span className="text-white">{formatCurrency(results.cloudTCO.monthly_cost || 0)}</span>
                                       </div>
                                     </div>
                                     <div className="border-t border-white/30 pt-2">
                                       <div className="flex justify-between font-bold">
-                                        <span className="text-white">Total Cloud TCO:</span>
+                                        <span className="text-white">Total Cloud TCO ({timeHorizon || 36} months):</span>
                                         <span className="text-blue-400">{formatCurrency(results.cloudTCO.total_cost)}</span>
                                       </div>
                                     </div>
@@ -632,12 +653,13 @@ function App() {
                   }}
                 />
               ) : (
-                <MasterData 
-                  llmModels={llmModels}
-                  gpuSpecs={gpuSpecs}
-                  cloudPricing={cloudPricing}
-                  onPremCosts={onPremCosts}
-                />
+        <MasterData 
+          llmModels={llmModels} 
+          gpuSpecs={gpuSpecs} 
+          cloudPricing={cloudPricing}
+          onPremCosts={onPremCosts}
+          cloudOpCosts={cloudOpCosts}
+        />
               )}
 
               {/* Charts Section */}

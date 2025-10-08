@@ -1,0 +1,127 @@
+{
+  "cloudOperationalCosts": {
+    "description": "Additional operational costs for cloud deployments often overlooked in basic TCO calculations",
+    "staffingCosts": {
+      "cloudInfrastructureEngineer": {
+        "title": "Cloud Infrastructure Engineer",
+        "description": "DevOps/Cloud engineer to manage cloud infrastructure, monitoring, scaling, and optimization",
+        "annualSalary": 135000,
+        "benefits": 0.30,
+        "allocation": 0.5,
+        "note": "50% allocation assuming shared across multiple projects"
+      },
+      "cloudSecuritySpecialist": {
+        "title": "Cloud Security Specialist", 
+        "description": "Security engineer for cloud compliance, IAM, and security monitoring",
+        "annualSalary": 145000,
+        "benefits": 0.25,
+        "allocation": 0.25,
+        "note": "25% allocation for security oversight and compliance"
+      },
+      "cloudArchitect": {
+        "title": "Cloud Solutions Architect",
+        "description": "Senior architect for cloud design, cost optimization, and best practices",
+        "annualSalary": 165000,
+        "benefits": 0.30,
+        "allocation": 0.15,
+        "note": "15% allocation for architectural guidance and optimization"
+      }
+    },
+    "operationalCosts": {
+      "cloudMonitoring": {
+        "title": "Cloud Monitoring & Observability",
+        "description": "CloudWatch, DataDog, New Relic, or similar monitoring tools",
+        "monthlyCost": 500,
+        "scalingFactor": "per_gpu",
+        "note": "Comprehensive monitoring for GPU workloads and performance tracking"
+      },
+      "cloudSecurity": {
+        "title": "Cloud Security Tools",
+        "description": "Security scanning, vulnerability assessment, and compliance tools",
+        "monthlyCost": 300,
+        "scalingFactor": "fixed",
+        "note": "Security tools and services for cloud infrastructure protection"
+      },
+      "backupAndDR": {
+        "title": "Backup & Disaster Recovery",
+        "description": "Data backup, model checkpoints, and disaster recovery services",
+        "monthlyCost": 200,
+        "scalingFactor": "per_gpu",
+        "note": "Critical for protecting ML models and training data"
+      },
+      "networkingAndCDN": {
+        "title": "Enhanced Networking & CDN",
+        "description": "VPC, load balancers, CDN, and enhanced networking for production workloads",
+        "monthlyCost": 400,
+        "scalingFactor": "fixed",
+        "note": "Production-grade networking and content delivery"
+      }
+    },
+    "complianceAndAudit": {
+      "securityAudit": {
+        "title": "Security & Compliance Audits",
+        "description": "Annual security audits, penetration testing, and compliance assessments",
+        "annualCost": 25000,
+        "frequency": "annual",
+        "note": "SOC2, ISO27001, or industry-specific compliance requirements"
+      },
+      "cloudCostOptimization": {
+        "title": "Cloud Cost Optimization Services",
+        "description": "Third-party cost optimization tools and consulting services",
+        "monthlyCost": 800,
+        "scalingFactor": "fixed",
+        "note": "Tools like CloudHealth, Cloudability, or consulting for cost optimization"
+      },
+      "legalAndCompliance": {
+        "title": "Legal & Regulatory Compliance",
+        "description": "Legal review for data privacy, AI governance, and regulatory compliance",
+        "annualCost": 15000,
+        "frequency": "annual",
+        "note": "GDPR, CCPA, AI Act compliance and legal reviews"
+      }
+    },
+    "hiddenCosts": {
+      "dataTransferCosts": {
+        "title": "Data Transfer & Egress Costs",
+        "description": "Often underestimated data transfer costs for model serving and data movement",
+        "monthlyPercentage": 0.15,
+        "note": "Typically 10-20% of compute costs for ML workloads with high data transfer"
+      },
+      "cloudVendorLockIn": {
+        "title": "Vendor Lock-in Risk Reserve",
+        "description": "Reserved budget for potential migration costs or vendor dependency risks",
+        "annualPercentage": 0.05,
+        "note": "5% annual reserve for potential migration or multi-cloud strategy costs"
+      },
+      "scalingInefficiency": {
+        "title": "Scaling Inefficiency Buffer",
+        "description": "Additional costs due to imperfect auto-scaling and resource over-provisioning",
+        "monthlyPercentage": 0.20,
+        "note": "20% buffer for scaling inefficiencies and resource waste"
+      }
+    },
+    "scalingFactors": {
+      "smallDeployment": {
+        "description": "1-4 GPUs equivalent",
+        "staffingMultiplier": 0.3,
+        "operationalMultiplier": 0.6,
+        "complianceMultiplier": 0.8,
+        "note": "Reduced overhead for smaller deployments but higher per-GPU costs"
+      },
+      "mediumDeployment": {
+        "description": "5-16 GPUs equivalent", 
+        "staffingMultiplier": 1.0,
+        "operationalMultiplier": 1.0,
+        "complianceMultiplier": 1.0,
+        "note": "Standard assumptions for medium-scale deployments"
+      },
+      "largeDeployment": {
+        "description": "17+ GPUs equivalent",
+        "staffingMultiplier": 1.5,
+        "operationalMultiplier": 1.3,
+        "complianceMultiplier": 1.2,
+        "note": "Increased complexity and dedicated resources for large-scale deployments"
+      }
+    }
+  }
+}
