@@ -35,6 +35,7 @@ import {
 
 // Import components
 import ModelComparison from './components/ModelComparison.jsx'
+import MasterData from './components/MasterData.jsx'
 
 function App() {
   const [selectedModel, setSelectedModel] = useState('')
@@ -227,6 +228,12 @@ function App() {
                 className={`transition-colors ${activeTab === 'comparison' ? 'text-white' : 'text-white/80 hover:text-white'}`}
               >
                 Compare Models
+              </button>
+              <button 
+                onClick={() => setActiveTab('master')}
+                className={`transition-colors ${activeTab === 'master' ? 'text-white' : 'text-white/80 hover:text-white'}`}
+              >
+                Master Data
               </button>
             </nav>
           </div>
@@ -501,13 +508,19 @@ function App() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : activeTab === 'comparison' ? (
                 <ModelComparison 
                   models={llmModels} 
                   onModelSelect={(modelId) => {
                     setSelectedModel(modelId)
                     setActiveTab('calculator')
                   }}
+                />
+              ) : (
+                <MasterData 
+                  llmModels={llmModels}
+                  gpuSpecs={gpuSpecs}
+                  cloudPricing={cloudPricing}
                 />
               )}
 
