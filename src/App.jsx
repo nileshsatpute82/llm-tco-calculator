@@ -113,7 +113,7 @@ function App() {
       )
       
       // Compare deployment options
-      const comparison = compareDeploymentOptions(onPremTCO, cloudTCO)
+      const comparison = compareDeploymentOptions(onPremTCO, cloudTCO, parseInt(timeHorizon))
       
       // Generate system recommendations
       const systemRecs = generateSystemRecommendations(gpuConfig, model)

@@ -125,21 +125,21 @@
   "scalingFactors": {
     "smallDeployment": {
       "name": "Small Deployment (1-4 GPUs)",
-      "staffingMultiplier": 0.5,
-      "infrastructureMultiplier": 1.2,
-      "description": "Higher per-GPU costs due to fixed overhead"
+      "staffingMultiplier": 0.2,
+      "infrastructureMultiplier": 0.3,
+      "description": "Minimal infrastructure for small deployments, shared resources"
     },
     "mediumDeployment": {
       "name": "Medium Deployment (5-16 GPUs)",
-      "staffingMultiplier": 0.8,
-      "infrastructureMultiplier": 1.0,
-      "description": "Standard deployment assumptions"
+      "staffingMultiplier": 0.6,
+      "infrastructureMultiplier": 0.8,
+      "description": "Moderate infrastructure investment"
     },
     "largeDeployment": {
       "name": "Large Deployment (17+ GPUs)",
-      "staffingMultiplier": 1.2,
-      "infrastructureMultiplier": 0.9,
-      "description": "Economies of scale, but more complex management"
+      "staffingMultiplier": 1.0,
+      "infrastructureMultiplier": 1.0,
+      "description": "Full enterprise infrastructure deployment"
     }
   }
 }

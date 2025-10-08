@@ -185,7 +185,7 @@ export const calculateCloudTCO = (requiredMemory, cloudProvider, timeHorizonMont
   };
 };
 
-export const compareDeploymentOptions = (onPremTCO, cloudTCO) => {
+export const compareDeploymentOptions = (onPremTCO, cloudTCO, timeHorizonMonths) => {
   if (!cloudTCO) return { recommendation: 'on-premises', reason: 'No suitable cloud instances found' };
   
   const onPremTotal = onPremTCO.tco.total;
@@ -196,19 +196,30 @@ export const compareDeploymentOptions = (onPremTCO, cloudTCO) => {
   if (onPremTotal < cloudTotal) {
     return {
       recommendation: 'on-premises',
-      reason: `On-premises is ${savingsPercentage.toFixed(1)}% cheaper`,
+      reason: `On-premises is ${savingsPercentage.toFixed(1)}% cheaper over ${timeHorizonMonths} months`,
       savings: savings,
-      breakeven_months: null
+      breakeven_months: null,
+      onprem_total: onPremTotal,
+      cloud_total: cloudTotal
     };
   } else {
-    // Calculate break-even point
-    const breakevenMonths = onPremTCO.capex.total / (cloudTCO.monthly_cost - onPremTCO.opex.total_monthly);
+    // Calculate break-even point - when on-prem CapEx + OpEx equals cloud costs
+    const monthlyCloudCost = cloudTCO.monthly_cost;
+    const monthlyOnPremOpEx = onPremTCO.opex.total_monthly;
+    const onPremCapEx = onPremTCO.capex.total;
+    
+    // Break-even: CapEx + (OpEx * months) = Cloud * months
+    // Solving for months: CapEx = (Cloud - OpEx) * months
+    const breakevenMonths = monthlyCloudCost > monthlyOnPremOpEx ? 
+      onPremCapEx / (monthlyCloudCost - monthlyOnPremOpEx) : null;
     
     return {
       recommendation: 'cloud',
-      reason: `Cloud is ${savingsPercentage.toFixed(1)}% cheaper over ${Math.round(breakevenMonths)} months`,
+      reason: `Cloud is ${savingsPercentage.toFixed(1)}% cheaper over ${timeHorizonMonths} months`,
       savings: savings,
-      breakeven_months: Math.round(breakevenMonths)
+      breakeven_months: breakevenMonths ? Math.round(breakevenMonths) : null,
+      onprem_total: onPremTotal,
+      cloud_total: cloudTotal
     };
   }
 };
