@@ -37,6 +37,9 @@ import {
 import ModelComparison from './components/ModelComparison.jsx'
 import MasterData from './components/MasterData.jsx'
 
+// Import on-premises cost data
+import onPremCosts from './data/onprem_costs.json'
+
 function App() {
   const [selectedModel, setSelectedModel] = useState('')
   const [useCase, setUseCase] = useState('')
@@ -97,7 +100,8 @@ function App() {
         gpuConfig, 
         parseInt(timeHorizon), 
         parseFloat(electricityCost),
-        deploymentType
+        deploymentType,
+        onPremCosts
       )
       
       // Calculate cloud TCO
@@ -521,6 +525,7 @@ function App() {
                   llmModels={llmModels}
                   gpuSpecs={gpuSpecs}
                   cloudPricing={cloudPricing}
+                  onPremCosts={onPremCosts}
                 />
               )}
 

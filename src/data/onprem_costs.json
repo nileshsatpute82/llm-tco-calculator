@@ -1,0 +1,145 @@
+{
+  "datacenterCosts": {
+    "rackSpace": {
+      "name": "Rack Space Rental",
+      "costPerMonth": 800,
+      "unit": "per rack",
+      "description": "Monthly cost for 42U rack space in enterprise datacenter",
+      "assumptions": "Tier 3 datacenter, includes power allocation up to 10kW"
+    },
+    "powerInfrastructure": {
+      "name": "Power Infrastructure",
+      "costPerKW": 2000,
+      "unit": "per kW capacity",
+      "description": "PDUs, UPS, backup generators, electrical installation",
+      "assumptions": "N+1 redundancy, 99.9% uptime SLA"
+    },
+    "coolingInfrastructure": {
+      "name": "Cooling Infrastructure", 
+      "costPerKW": 1500,
+      "unit": "per kW cooling capacity",
+      "description": "HVAC, liquid cooling, environmental controls",
+      "assumptions": "1.3 PUE (Power Usage Effectiveness) ratio"
+    },
+    "networkInfrastructure": {
+      "name": "Network Infrastructure",
+      "baseCost": 15000,
+      "costPerPort": 500,
+      "unit": "per deployment",
+      "description": "Switches, routers, cabling, bandwidth",
+      "assumptions": "100Gbps backbone, redundant paths"
+    }
+  },
+  "staffingCosts": {
+    "gpuInfrastructureEngineer": {
+      "name": "GPU Infrastructure Engineer",
+      "annualSalary": 150000,
+      "benefits": 0.35,
+      "unit": "per FTE",
+      "description": "Specialized engineer for GPU cluster management",
+      "assumptions": "Senior level, includes stock options and benefits"
+    },
+    "systemAdministrator": {
+      "name": "System Administrator",
+      "annualSalary": 100000,
+      "benefits": 0.30,
+      "unit": "per FTE",
+      "description": "Linux system administration and monitoring",
+      "assumptions": "Mid-level, shared across multiple systems"
+    },
+    "networkEngineer": {
+      "name": "Network Engineer (Allocated)",
+      "annualAllocation": 40000,
+      "unit": "per deployment",
+      "description": "Network engineering support allocation",
+      "assumptions": "25% allocation of senior network engineer"
+    },
+    "onCallSupport": {
+      "name": "On-Call Support",
+      "monthlyCost": 8000,
+      "unit": "per deployment",
+      "description": "24/7 on-call support coverage",
+      "assumptions": "Rotating on-call schedule, incident response"
+    }
+  },
+  "operationalCosts": {
+    "facilityCosts": {
+      "name": "Facility Overhead",
+      "percentageOfPower": 0.40,
+      "unit": "% of power costs",
+      "description": "Space, utilities, insurance, security",
+      "assumptions": "40% markup on electricity for facility overhead"
+    },
+    "backupAndDR": {
+      "name": "Backup & Disaster Recovery",
+      "percentageOfHardware": 0.15,
+      "unit": "% of hardware cost",
+      "description": "Backup systems, DR site, data replication",
+      "assumptions": "15% of hardware cost for redundancy"
+    },
+    "monitoringTools": {
+      "name": "Monitoring & Management Tools",
+      "annualCost": 25000,
+      "unit": "per deployment",
+      "description": "Monitoring, orchestration, management software",
+      "assumptions": "Enterprise monitoring stack (Nagios, Grafana, etc.)"
+    },
+    "complianceAndSecurity": {
+      "name": "Compliance & Security",
+      "percentageOfTotal": 0.03,
+      "unit": "% of total infrastructure",
+      "description": "Security audits, compliance, certifications",
+      "assumptions": "3% of total infrastructure value annually"
+    }
+  },
+  "hiddenCosts": {
+    "hardwareRefresh": {
+      "name": "Hardware Refresh Reserve",
+      "percentageOfHardware": 0.20,
+      "unit": "% of hardware cost annually",
+      "description": "Reserve for hardware obsolescence and upgrades",
+      "assumptions": "20% annually to account for 5-year refresh cycle"
+    },
+    "downtimeCosts": {
+      "name": "Downtime & Redundancy",
+      "percentageOfHardware": 0.10,
+      "unit": "% of hardware cost",
+      "description": "Redundant hardware to minimize downtime",
+      "assumptions": "10% additional hardware for N+1 redundancy"
+    },
+    "trainingAndCertification": {
+      "name": "Training & Certification",
+      "annualCostPerPerson": 15000,
+      "unit": "per staff member",
+      "description": "Technical training, vendor certifications",
+      "assumptions": "Continuous learning for GPU/AI technologies"
+    },
+    "vendorSupport": {
+      "name": "Vendor Support Contracts",
+      "percentageOfHardware": 0.12,
+      "unit": "% of hardware cost annually",
+      "description": "Hardware support, software licenses",
+      "assumptions": "12% of hardware cost for enterprise support"
+    }
+  },
+  "scalingFactors": {
+    "smallDeployment": {
+      "name": "Small Deployment (1-4 GPUs)",
+      "staffingMultiplier": 0.5,
+      "infrastructureMultiplier": 1.2,
+      "description": "Higher per-GPU costs due to fixed overhead"
+    },
+    "mediumDeployment": {
+      "name": "Medium Deployment (5-16 GPUs)",
+      "staffingMultiplier": 0.8,
+      "infrastructureMultiplier": 1.0,
+      "description": "Standard deployment assumptions"
+    },
+    "largeDeployment": {
+      "name": "Large Deployment (17+ GPUs)",
+      "staffingMultiplier": 1.2,
+      "infrastructureMultiplier": 0.9,
+      "description": "Economies of scale, but more complex management"
+    }
+  }
+}

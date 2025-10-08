@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.j
 import { Badge } from '@/components/ui/badge.jsx'
 import { Database, Cpu, Cloud, Zap } from 'lucide-react'
 
-const MasterData = ({ llmModels, gpuSpecs, cloudPricing }) => {
+const MasterData = ({ llmModels, gpuSpecs, cloudPricing, onPremCosts }) => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -25,7 +25,7 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing }) => {
       </div>
 
       <Tabs defaultValue="llm-models" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-white/10">
+        <TabsList className="grid w-full grid-cols-4 bg-white/10">
           <TabsTrigger value="llm-models" className="data-[state=active]:bg-white/20">
             LLM Models
           </TabsTrigger>
@@ -34,6 +34,9 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing }) => {
           </TabsTrigger>
           <TabsTrigger value="cloud-pricing" className="data-[state=active]:bg-white/20">
             Cloud Pricing
+          </TabsTrigger>
+          <TabsTrigger value="onprem-costs" className="data-[state=active]:bg-white/20">
+            On-Prem Costs
           </TabsTrigger>
         </TabsList>
 
@@ -238,6 +241,179 @@ const MasterData = ({ llmModels, gpuSpecs, cloudPricing }) => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* On-Premises Costs Tab */}
+        <TabsContent value="onprem-costs" className="space-y-4">
+          <div className="grid gap-4">
+            {/* Datacenter Costs */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Database className="w-5 h-5" />
+                  Datacenter Infrastructure Costs
+                </CardTitle>
+                <CardDescription className="text-white/70">
+                  Physical infrastructure and facility costs
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left p-2 text-white font-medium">Cost Category</th>
+                        <th className="text-left p-2 text-white font-medium">Rate</th>
+                        <th className="text-left p-2 text-white font-medium">Unit</th>
+                        <th className="text-left p-2 text-white font-medium">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {onPremCosts && Object.entries(onPremCosts.datacenterCosts).map(([key, cost]) => (
+                        <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="p-2 text-white">{cost.name}</td>
+                          <td className="p-2 text-white">
+                            {formatCurrency(cost.costPerMonth || cost.costPerKW || cost.baseCost || cost.costPerPort)}
+                          </td>
+                          <td className="p-2 text-white/70">{cost.unit}</td>
+                          <td className="p-2 text-white/70 text-xs">{cost.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Staffing Costs */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Cpu className="w-5 h-5" />
+                  Staffing Costs
+                </CardTitle>
+                <CardDescription className="text-white/70">
+                  Personnel costs for GPU infrastructure management
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left p-2 text-white font-medium">Role</th>
+                        <th className="text-left p-2 text-white font-medium">Annual Cost</th>
+                        <th className="text-left p-2 text-white font-medium">Unit</th>
+                        <th className="text-left p-2 text-white font-medium">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {onPremCosts && Object.entries(onPremCosts.staffingCosts).map(([key, cost]) => (
+                        <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="p-2 text-white">{cost.name}</td>
+                          <td className="p-2 text-white">
+                            {formatCurrency(
+                              cost.annualSalary ? cost.annualSalary * (1 + (cost.benefits || 0)) :
+                              cost.annualAllocation || cost.monthlyCost * 12
+                            )}
+                          </td>
+                          <td className="p-2 text-white/70">{cost.unit}</td>
+                          <td className="p-2 text-white/70 text-xs">{cost.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Operational Costs */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  Operational & Hidden Costs
+                </CardTitle>
+                <CardDescription className="text-white/70">
+                  Ongoing operational expenses and hidden costs
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Operational Costs */}
+                  <div>
+                    <h4 className="text-white font-medium mb-2">Operational Costs</h4>
+                    <div className="space-y-2 text-sm">
+                      {onPremCosts && Object.entries(onPremCosts.operationalCosts).map(([key, cost]) => (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-white/70">{cost.name}:</span>
+                          <span className="text-white">
+                            {cost.percentageOfPower ? `${(cost.percentageOfPower * 100)}% of power` :
+                             cost.percentageOfHardware ? `${(cost.percentageOfHardware * 100)}% of hardware` :
+                             cost.percentageOfTotal ? `${(cost.percentageOfTotal * 100)}% of total` :
+                             formatCurrency(cost.annualCost)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Hidden Costs */}
+                  <div>
+                    <h4 className="text-white font-medium mb-2">Hidden Costs</h4>
+                    <div className="space-y-2 text-sm">
+                      {onPremCosts && Object.entries(onPremCosts.hiddenCosts).map(([key, cost]) => (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-white/70">{cost.name}:</span>
+                          <span className="text-white">
+                            {cost.percentageOfHardware ? `${(cost.percentageOfHardware * 100)}% of hardware` :
+                             formatCurrency(cost.annualCostPerPerson || 0)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Scaling Factors */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Cloud className="w-5 h-5" />
+                  Scaling Factors
+                </CardTitle>
+                <CardDescription className="text-white/70">
+                  Cost multipliers based on deployment size
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left p-2 text-white font-medium">Deployment Size</th>
+                        <th className="text-left p-2 text-white font-medium">Staffing Multiplier</th>
+                        <th className="text-left p-2 text-white font-medium">Infrastructure Multiplier</th>
+                        <th className="text-left p-2 text-white font-medium">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {onPremCosts && Object.entries(onPremCosts.scalingFactors).map(([key, factor]) => (
+                        <tr key={key} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="p-2 text-white">{factor.name}</td>
+                          <td className="p-2 text-white">{factor.staffingMultiplier}x</td>
+                          <td className="p-2 text-white">{factor.infrastructureMultiplier}x</td>
+                          <td className="p-2 text-white/70 text-xs">{factor.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

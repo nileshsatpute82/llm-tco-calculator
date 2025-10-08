@@ -40,41 +40,118 @@ export const findOptimalGPUs = (requiredMemory, gpus) => {
   }
 };
 
-export const calculateTCO = (gpuConfig, timeHorizonMonths, electricityCost, deploymentType) => {
+export const calculateTCO = (gpuConfig, timeHorizonMonths, electricityCost, deploymentType, onPremCosts = null) => {
   const { recommended: gpu, gpuCount } = gpuConfig;
   
-  // Hardware costs (CapEx)
+  // Determine deployment scale
+  let scale = 'medium'
+  if (gpuCount <= 4) scale = 'small'
+  else if (gpuCount >= 17) scale = 'large'
+  
+  // Basic hardware costs (CapEx)
   const gpuCost = gpu.price_usd * gpuCount;
   const serverCost = calculateServerCost(gpuCount);
   const networkingCost = calculateNetworkingCost(gpuCount);
-  const totalCapEx = gpuCost + serverCost + networkingCost;
   
-  // Operating costs (OpEx)
-  const powerCostMonthly = calculatePowerCost(gpu, gpuCount, electricityCost);
-  const maintenanceCostMonthly = totalCapEx * 0.02 / 12; // 2% annual maintenance
-  const totalOpExMonthly = powerCostMonthly + maintenanceCostMonthly;
-  const totalOpEx = totalOpExMonthly * timeHorizonMonths;
+  // Enhanced on-premises costs
+  let datacenterCapEx = 0
+  let staffingOpEx = 0
+  let operationalOpEx = 0
+  let hiddenCosts = 0
   
-  // Total TCO
-  const totalTCO = totalCapEx + totalOpEx;
+  if (deploymentType === 'on-premises' && onPremCosts) {
+    const dc = onPremCosts.datacenterCosts
+    const staff = onPremCosts.staffingCosts
+    const ops = onPremCosts.operationalCosts
+    const hidden = onPremCosts.hiddenCosts
+    const scaling = onPremCosts.scalingFactors[scale + 'Deployment']
+    
+    // Datacenter Infrastructure CapEx
+    const powerRequired = (gpu.power_consumption * gpuCount + 200) / 1000 // kW
+    const racksNeeded = Math.ceil(gpuCount / 8) // Assume 8 GPUs per rack
+    
+    datacenterCapEx = (
+      dc.rackSpace.costPerMonth * 12 * (timeHorizonMonths / 12) * racksNeeded + // Rack space over time horizon
+      dc.powerInfrastructure.costPerKW * powerRequired * 1.5 + // Power infrastructure
+      dc.coolingInfrastructure.costPerKW * powerRequired * 1.3 + // Cooling infrastructure  
+      dc.networkInfrastructure.baseCost + dc.networkInfrastructure.costPerPort * gpuCount // Network
+    ) * (scaling?.infrastructureMultiplier || 1.0)
+    
+    // Staffing OpEx (for time horizon)
+    const annualStaffing = (
+      (staff.gpuInfrastructureEngineer.annualSalary * (1 + staff.gpuInfrastructureEngineer.benefits)) +
+      (staff.systemAdministrator.annualSalary * (1 + staff.systemAdministrator.benefits)) +
+      staff.networkEngineer.annualAllocation +
+      (staff.onCallSupport.monthlyCost * 12)
+    ) * (scaling?.staffingMultiplier || 1.0)
+    
+    staffingOpEx = annualStaffing * (timeHorizonMonths / 12)
+    
+    // Operational OpEx
+    const powerCostMonthly = calculatePowerCost(gpu, gpuCount, electricityCost)
+    const facilityOverhead = powerCostMonthly * ops.facilityCosts.percentageOfPower
+    
+    const annualOperational = (
+      (powerCostMonthly + facilityOverhead) * 12 + // Power + facility
+      (gpuCost + serverCost) * ops.backupAndDR.percentageOfHardware + // Backup/DR
+      ops.monitoringTools.annualCost + // Monitoring tools
+      (gpuCost + serverCost + datacenterCapEx) * ops.complianceAndSecurity.percentageOfTotal // Compliance
+    )
+    
+    operationalOpEx = annualOperational * (timeHorizonMonths / 12)
+    
+    // Hidden Costs
+    const annualHidden = (
+      (gpuCost + serverCost) * hidden.hardwareRefresh.percentageOfHardware + // Hardware refresh
+      (gpuCost + serverCost) * hidden.downtimeCosts.percentageOfHardware + // Redundancy
+      hidden.trainingAndCertification.annualCostPerPerson * 2 + // Training for 2 staff
+      (gpuCost + serverCost) * hidden.vendorSupport.percentageOfHardware // Vendor support
+    )
+    
+    hiddenCosts = annualHidden * (timeHorizonMonths / 12)
+  }
+  
+  // Basic OpEx for simple calculation
+  const basicPowerCostMonthly = calculatePowerCost(gpu, gpuCount, electricityCost);
+  const basicMaintenanceCostMonthly = (gpuCost + serverCost + networkingCost) * 0.02 / 12; // 2% annual maintenance
+  const basicOpExMonthly = basicPowerCostMonthly + basicMaintenanceCostMonthly;
+  const basicOpEx = basicOpExMonthly * timeHorizonMonths;
+  
+  // Total calculations
+  const totalCapEx = gpuCost + serverCost + networkingCost + datacenterCapEx
+  const totalOpEx = onPremCosts ? (staffingOpEx + operationalOpEx + hiddenCosts) : basicOpEx
+  const totalTCO = totalCapEx + totalOpEx
   
   return {
     capex: {
       gpu: gpuCost,
       server: serverCost,
       networking: networkingCost,
+      datacenter: datacenterCapEx,
       total: totalCapEx
     },
     opex: {
-      power_monthly: powerCostMonthly,
-      maintenance_monthly: maintenanceCostMonthly,
-      total_monthly: totalOpExMonthly,
+      staffing: onPremCosts ? staffingOpEx : 0,
+      operational: onPremCosts ? operationalOpEx : 0,
+      hidden: onPremCosts ? hiddenCosts : 0,
+      power_monthly: basicPowerCostMonthly,
+      maintenance_monthly: basicMaintenanceCostMonthly,
+      total_monthly: onPremCosts ? (totalOpEx / timeHorizonMonths) : basicOpExMonthly,
       total: totalOpEx
     },
     tco: {
       total: totalTCO,
       monthly_average: totalTCO / timeHorizonMonths
-    }
+    },
+    breakdown: {
+      hardware: gpuCost + serverCost + networkingCost,
+      datacenter: datacenterCapEx,
+      staffing: onPremCosts ? staffingOpEx : 0,
+      operations: onPremCosts ? operationalOpEx : 0,
+      hidden: onPremCosts ? hiddenCosts : 0
+    },
+    scale: scale,
+    enhanced: !!onPremCosts
   };
 };
 
