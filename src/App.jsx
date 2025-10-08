@@ -509,6 +509,117 @@ function App() {
                           </CardContent>
                         </Card>
                       )}
+
+                      {/* Cost Calculation Breakdown */}
+                      {results && (
+                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                          <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                              <Calculator className="w-5 h-5" />
+                              Cost Calculation Breakdown
+                            </CardTitle>
+                            <CardDescription className="text-white/70">
+                              How we calculated your TCO
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              {/* On-Premises Calculation */}
+                              <div className="space-y-3">
+                                <h4 className="text-white font-semibold">On-Premises TCO</h4>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-white/70">GPU Hardware:</span>
+                                    <span className="text-white">
+                                      {results.gpuConfig?.gpuCount || 0}x {results.gpuConfig?.recommended?.name || 'N/A'} = {formatCurrency((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price || 0))}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-white/70">Server + Infrastructure:</span>
+                                    <span className="text-white">{formatCurrency((results.onPremTCO?.capex?.total || 0) - ((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price || 0)))}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-white/70">Total CapEx:</span>
+                                    <span className="text-white font-semibold">{formatCurrency(results.onPremTCO?.capex?.total || 0)}</span>
+                                  </div>
+                                  <div className="border-t border-white/20 pt-2">
+                                    <div className="flex justify-between">
+                                      <span className="text-white/70">OpEx ({timeHorizon || 36} months):</span>
+                                      <span className="text-white">{formatCurrency(results.onPremTCO?.opex?.total || 0)}</span>
+                                    </div>
+                                    <div className="text-xs text-white/60 mt-1">
+                                      Includes: Power, staffing, maintenance, datacenter costs
+                                    </div>
+                                  </div>
+                                  <div className="border-t border-white/30 pt-2">
+                                    <div className="flex justify-between font-bold">
+                                      <span className="text-white">Total On-Prem TCO:</span>
+                                      <span className="text-green-400">{formatCurrency(results.onPremTCO?.tco?.total || 0)}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Cloud Calculation */}
+                              <div className="space-y-3">
+                                <h4 className="text-white font-semibold">Cloud TCO</h4>
+                                {results.cloudTCO ? (
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-white/70">Instance Type:</span>
+                                      <span className="text-white">{results.cloudTCO.instance_type}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/70">Hourly Rate:</span>
+                                      <span className="text-white">{formatCurrency(results.cloudTCO.hourly_rate)}/hour</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/70">Monthly Cost:</span>
+                                      <span className="text-white">{formatCurrency(results.cloudTCO.hourly_rate)} × 730 hours = {formatCurrency(results.cloudTCO.monthly_cost)}</span>
+                                    </div>
+                                    <div className="border-t border-white/20 pt-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-white/70">Total ({timeHorizon || 36} months):</span>
+                                        <span className="text-white">{formatCurrency(results.cloudTCO.monthly_cost)} × {timeHorizon || 36} = {formatCurrency(results.cloudTCO.total_cost)}</span>
+                                      </div>
+                                    </div>
+                                    <div className="border-t border-white/30 pt-2">
+                                      <div className="flex justify-between font-bold">
+                                        <span className="text-white">Total Cloud TCO:</span>
+                                        <span className="text-blue-400">{formatCurrency(results.cloudTCO.total_cost)}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="text-center py-4">
+                                    <p className="text-white/60 text-sm">No suitable cloud instances found</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Comparison Summary */}
+                            {results.cloudTCO && (
+                              <div className="mt-6 pt-4 border-t border-white/20">
+                                <div className="text-center">
+                                  <p className="text-white/70 text-sm mb-2">Cost Comparison</p>
+                                  <div className="flex justify-center items-center gap-4">
+                                    <span className="text-green-400 font-semibold">On-Prem: {formatCurrency(results.onPremTCO?.tco?.total || 0)}</span>
+                                    <span className="text-white/60">vs</span>
+                                    <span className="text-blue-400 font-semibold">Cloud: {formatCurrency(results.cloudTCO.total_cost)}</span>
+                                  </div>
+                                  <p className="text-yellow-400 font-semibold mt-2 capitalize">
+                                    Recommendation: {results.comparison?.recommendation || 'N/A'}
+                                  </p>
+                                  {results.comparison?.reason && (
+                                    <p className="text-white/60 text-sm mt-1">{results.comparison.reason}</p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
                     </div>
                   )}
                 </div>
