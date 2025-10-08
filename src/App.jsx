@@ -208,32 +208,32 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
       {/* Header */}
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-cyan-400 rounded-lg flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-black" />
               </div>
-              <h1 className="text-xl font-bold text-white">LLM Calculator</h1>
+              <h1 className="text-lg md:text-xl font-bold text-white">LLM Calculator</h1>
             </div>
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="flex items-center space-x-3 md:space-x-6">
               <button 
                 onClick={() => setActiveTab('calculator')}
-                className={`transition-colors ${activeTab === 'calculator' ? 'text-white' : 'text-white/80 hover:text-white'}`}
+                className={`transition-colors text-sm md:text-base px-2 py-1 rounded ${activeTab === 'calculator' ? 'text-white bg-white/10' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
               >
                 Calculator
               </button>
               <button 
                 onClick={() => setActiveTab('comparison')}
-                className={`transition-colors ${activeTab === 'comparison' ? 'text-white' : 'text-white/80 hover:text-white'}`}
+                className={`transition-colors text-sm md:text-base px-2 py-1 rounded ${activeTab === 'comparison' ? 'text-white bg-white/10' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
               >
-                Compare Models
+                Compare
               </button>
               <button 
                 onClick={() => setActiveTab('master')}
-                className={`transition-colors ${activeTab === 'master' ? 'text-white' : 'text-white/80 hover:text-white'}`}
+                className={`transition-colors text-sm md:text-base px-2 py-1 rounded ${activeTab === 'master' ? 'text-white bg-white/10' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
               >
-                Master Data
+                Master
               </button>
             </nav>
           </div>
@@ -241,12 +241,12 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <section className="py-8 px-6">
+      <section className="py-6 md:py-8 px-4 md:px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="flex justify-center">
             <div className="w-full max-w-5xl">
               {activeTab === 'calculator' ? (
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
                   {/* Input Form */}
                   <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                     <CardHeader>
@@ -527,7 +527,7 @@ function App() {
               {/* Charts Section */}
               {results && activeTab === 'calculator' && (
                 <div className="mt-12">
-                  <div className="grid lg:grid-cols-3 gap-8">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {/* TCO Comparison Chart */}
                     <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                       <CardHeader>
@@ -630,9 +630,9 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-black/20 backdrop-blur-sm py-8">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-white/60">
+      <footer className="border-t border-white/10 bg-black/20 backdrop-blur-sm py-6 md:py-8">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <p className="text-white/60 text-sm md:text-base">
             Built for AI/ML architects and enterprise clients to estimate compute needs for LLM deployment
           </p>
         </div>
