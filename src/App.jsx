@@ -531,12 +531,12 @@ function App() {
                                   <div className="flex justify-between">
                                     <span className="text-white/70">GPU Hardware:</span>
                                     <span className="text-white">
-                                      {results.gpuConfig?.gpuCount || 0}x {results.gpuConfig?.recommended?.name || 'N/A'} = {formatCurrency((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price || 0))}
+                                      {results.gpuConfig?.gpuCount || 0}x {results.gpuConfig?.recommended?.name || 'N/A'} = {formatCurrency((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price_usd || 0))}
                                     </span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-white/70">Server + Infrastructure:</span>
-                                    <span className="text-white">{formatCurrency((results.onPremTCO?.capex?.total || 0) - ((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price || 0)))}</span>
+                                    <span className="text-white">{formatCurrency((results.onPremTCO?.capex?.total || 0) - ((results.gpuConfig?.gpuCount || 0) * (results.gpuConfig?.recommended?.price_usd || 0)))}</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-white/70">Total CapEx:</span>
